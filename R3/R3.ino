@@ -66,7 +66,7 @@ unsigned char Flag_Stop = 1;                             //停止标志位
 //中断接收openmv发送的指令
 //第一个字符为@起始标志位，第二个前后停fbs，第三个左中右LNR，第四个大小弯BS
 String inputString = "";         // a String to hold incoming data
-bool stringComplete = false;  // whether the string is complete
+volatile bool stringComplete = false;  // whether the string is complete
 
 
 
@@ -254,9 +254,9 @@ void steerCar(enum STEERING choice, bool forward) {
 
 void openmvloop(){
   if (stringComplete) {
-    //Serial.println(inputString);
+    Serial.println(inputString);
     // clear the string:
-    while(inputString[0] == '@'){
+    if(inputString[0] == '@'){
       if(inputString[0] == 's'){
          Flag_Stop = 1; 
       }
@@ -308,25 +308,31 @@ void openmvloop(){
   }
 }
 void serialEvent() {
+  Serial.println("serialIn");
   while (Serial.available()) {
     // get the new byte:
+    Serial.println("serialEvent");
     char inChar = (char)Serial.read();
     // add it to the inputString:
     inputString += inChar;
+
     // if the incoming character is a newline, set a flag so the main loop can
     // do something about it:
     if (inChar == '\n') {
+      Serial.println("stringComplete");
       stringComplete = true;
+      // Serial.readString();
+      break;
     }
   }
 }
 
 void setup() {
-  Serial.begin(115200);
-  Serial.println("转向在第8通道 编号从0开始的");
+  Serial.begin(9600);
+  Serial.println("start");
 
   //  只保留 200 bytes给inputString:
-  inputString.reserve(200);
+  // inputString.reserve(200);
   
   pwm.begin();
   // 需要用示波器确认一下晶振的频率是多少Hz 才能保证PWM的频率够准确
@@ -377,9 +383,10 @@ void loop() {
   // delay(4000);
   // steerCar(NEUTRAL, 1);
   // delay(4000);
-  steerCar(NEUTRAL, 0);
+  // steerCar(NEUTRAL, 0);
   openmvloop(); 
-  delay(4000);
+  // delay(4000);
+  delay(40);
    
 }
 
