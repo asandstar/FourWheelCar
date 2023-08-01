@@ -1,12 +1,13 @@
-THRESHOLD = (13, 58, 11, 127, -128, 127)# Grayscale threshold for dark things...
+THRESHOLD = (6, 65, 30, 105, 10, 49) # Grayscale threshold for dark things...
 #(13, 58, 11, 127, -128, 127) blue
 #(6, 65, 30, 105, 10, 49)  red
 # (34, 0, -27, 2, 0, 18) black
 import sensor, image, time
 from pyb import LED
 from pid import PID
+import car
 rho_pid = PID(p=0.4, i=0)
-theta_pid = PID(p=0.001, i=0)
+theta_pid = PID(p=0.3, i=0)
 
 LED(1).on()
 LED(2).on()
@@ -42,12 +43,13 @@ while(True):
                 car.trans('f','R','B')
             elif output > 10:
                 car.trans('f','R','S')
-            elif output > 0:
+            elif output > -10:
                 car.trans('f','N','S')
             elif output < -10 and output > -20:
                 car.trans('f','L','S')
             elif output < -20 :
                 car.trans('f','L','B')
+
         else:
             car.trans('s','N','S')
     else:
