@@ -21,6 +21,8 @@
 
 #define SERVO_FREQ 50    // 舵机PWM的频率是50Hz
 #define CHANNEL_STEER 8  //默认我设在8通道 通道范围0~15
+#define CHANNEL_GIMBAL_UP 7 //云台上层舵机脉冲
+#define CHANNEL_GIMBAL_DOWN 6 //云台下层舵机脉冲
 
 #define TARGET_SPEED_BASE 75  //某个速度
 
@@ -67,8 +69,6 @@ unsigned char Flag_Stop = 1;                             //停止标志位
 //第一个字符为@起始标志位，第二个前后停fbs，第三个左中右LNR，第四个大小弯BS
 String inputString = "";         // a String to hold incoming data
 volatile bool stringComplete = false;  // whether the string is complete
-
-
 
 unsigned char Turn_Off(float voltage) {
   unsigned char temp;
@@ -120,7 +120,6 @@ float* velocity(int encoder_left, int encoder_right) {
 
   return Velocity;
 }
-
 
 void Set_Pwm(int moto1, int moto2) {
   if (moto1 > 0) {
@@ -196,7 +195,6 @@ void setServoPulse(uint8_t channel, double pulse_us) {
                                      // 高电平 再然后全是低电平
 }
 
-
 void steerCar(enum STEERING choice, bool forward) {
   switch (choice) {
     case LEFT_LARGE:
@@ -251,6 +249,75 @@ void steerCar(enum STEERING choice, bool forward) {
   }
 }
 
+void steerGimbalUp(enum STEERING choice, bool forward) {
+  switch (choice) {
+    case LEFT_LARGE:
+      {
+        // 左打满
+        setServoPulse(CHANNEL_GIMBAL_UP, SERVO_LEFT_TRS_US);
+        break;
+      }
+    case LEFT_SMALL:
+      {
+        // 左打一半
+        setServoPulse(CHANNEL_GIMBAL_UP, SERVO_LEFT_TRL_US);
+        break;
+      }
+    case NEUTRAL:
+      {
+        // 回中
+        setServoPulse(CHANNEL_GIMBAL_UP, SERVO_MID_US);
+        break;
+      }
+    case RIGHT_SMALL:
+      {
+        // 右打一半
+        setServoPulse(CHANNEL_GIMBAL_UP, SERVO_RIGHT_TRL_US);
+        break;
+      }
+    case RIGHT_LARGE:
+      {
+        // 右打满
+        setServoPulse(CHANNEL_GIMBAL_UP, SERVO_RIGHT_TRS_US);
+        break;
+      }
+  }
+}
+
+void steerGimbalDown(enum STEERING choice, bool forward) {
+  switch (choice) {
+    case LEFT_LARGE:
+      {
+        // 左打满
+        setServoPulse(CHANNEL_GIMBAL_DOWN, SERVO_LEFT_TRS_US);
+        break;
+      }
+    case LEFT_SMALL:
+      {
+        // 左打一半
+        setServoPulse(CHANNEL_GIMBAL_DOWN, SERVO_LEFT_TRL_US);
+        break;
+      }
+    case NEUTRAL:
+      {
+        // 回中
+        setServoPulse(CHANNEL_GIMBAL_DOWN, SERVO_MID_US);
+        break;
+      }
+    case RIGHT_SMALL:
+      {
+        // 右打一半
+        setServoPulse(CHANNEL_GIMBAL_DOWN, SERVO_RIGHT_TRL_US);
+        break;
+      }
+    case RIGHT_LARGE:
+      {
+        // 右打满
+        setServoPulse(CHANNEL_GIMBAL_DOWN, SERVO_RIGHT_TRS_US);
+        break;
+      }
+  }
+}
 
 void openmvloop(){
   if (stringComplete) {
@@ -309,6 +376,7 @@ void openmvloop(){
     stringComplete = false;
   }
 }
+
 void serialEvent() {
   Serial.println("serialIn");
   while (Serial.available()) {
@@ -367,6 +435,7 @@ void setup() {
 }
 
 void loop() {
+  // //四轮车各种方向行驶测试
   // steerCar(RIGHT_LARGE, 1);
   // delay(4000);
   // steerCar(LEFT_LARGE, 1);
@@ -386,10 +455,56 @@ void loop() {
   // steerCar(NEUTRAL, 1);
   // delay(4000);
   // steerCar(NEUTRAL, 0);
+   // delay(4000);
+
+  //OpenMV直线循迹测试
   openmvloop(); 
-  // delay(4000);
   delay(40);
-   
+
+  // //云台双舵机测试
+  // //云台上层控制
+  // steerGimbalUp(RIGHT_LARGE, 1);
+  // delay(1000);
+  // steerGimbalUp(LEFT_LARGE, 1);
+  // delay(1000);
+  // steerGimbalUp(RIGHT_SMALL, 1);
+  // delay(1000);
+  // steerGimbalUp(RIGHT_SMALL, 0);
+  // delay(1000);
+  // steerGimbalUp(LEFT_SMALL, 1);
+  // delay(1000);
+  // steerGimbalUp(LEFT_SMALL, 0);
+  // delay(1000);
+  // steerGimbalUp(RIGHT_LARGE, 0);
+  // delay(1000);
+  // steerGimbalUp(LEFT_LARGE, 0);
+  // delay(1000);
+  // steerGimbalUp(NEUTRAL, 1);
+  // delay(1000);
+  // steerGimbalUp(NEUTRAL, 0);
+  // delay(1000);  
+
+  // //云台下层控制
+  // steerGimbalDown(RIGHT_LARGE, 1);
+  // delay(1000); 
+  // steerGimbalDown(LEFT_LARGE, 1);
+  // delay(1000); 
+  // steerGimbalDown(RIGHT_SMALL, 1);
+  // delay(1000); 
+  // steerGimbalDown(RIGHT_SMALL, 0);
+  // delay(1000); 
+  // steerGimbalDown(LEFT_SMALL, 1);
+  // delay(1000); 
+  // steerGimbalDown(LEFT_SMALL, 0);
+  // delay(1000); 
+  // steerGimbalDown(RIGHT_LARGE, 0);
+  // delay(1000); 
+  // steerGimbalDown(LEFT_LARGE, 0);
+  // delay(1000); 
+  // steerGimbalDown(NEUTRAL, 1);
+  // delay(1000); 
+  // steerGimbalDown(NEUTRAL, 0);
+  // delay(1000); 
 }
 
 void READ_ENCODER_L() {
