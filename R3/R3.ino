@@ -63,6 +63,13 @@ double Velocity_Kp = 2, Velocity_Ki = 0.001;              //左右轮速度控�
 float Battery_Voltage;                                   //电池电压 单位是V
 unsigned char Flag_Stop = 1;                             //停止标志位
 
+//中断接收openmv发送的指令
+//第一个字符为@起始标志位，第二个前后停fbs，第三个左中右LNR，第四个大小弯BS
+String inputString = "";         // a String to hold incoming data
+bool stringComplete = false;  // whether the string is complete
+
+
+
 unsigned char Turn_Off(float voltage) {
   unsigned char temp;
   if (1 == Flag_Stop || voltage < 11.1)  //电池电压低于11.1V关闭电机 || Flag_Stop置1关闭电机
@@ -244,10 +251,83 @@ void steerCar(enum STEERING choice, bool forward) {
   }
 }
 
+
+void openmvloop(){
+  if (stringComplete) {
+    //Serial.println(inputString);
+    // clear the string:
+    while(inputString[0] == '@'){
+      if(inputString[0] == 's'){
+         Flag_Stop = 1; 
+      }
+      if(inputString[1] == 'f'){
+        if(inputString[2] == 'L'){
+          if(inputString[3] == 'B'){
+            steerCar(LEFT_LARGE, 1);  
+          }
+          else{
+            steerCar(LEFT_SMALL, 1);
+          }  
+        }
+        if(inputString[2] == 'R'){
+          if(inputString[3] == 'B'){
+            steerCar(RIGHT_LARGE, 1);  
+          }
+          else{
+            steerCar(RIGHT_SMALL, 1);
+          }  
+        }
+        if(inputString[2] == 'N'){
+          steerCar(NEUTRAL, 1);
+        }   
+      }
+      if(inputString[1] == 'b'){
+        if(inputString[2] == 'L'){
+          if(inputString[3] == 'B'){
+            steerCar(LEFT_LARGE, 0);  
+          }
+          else{
+            steerCar(LEFT_SMALL, 0);
+          }  
+        }
+        if(inputString[2] == 'R'){
+          if(inputString[3] == 'B'){
+            steerCar(RIGHT_LARGE, 0);  
+          }
+          else{
+            steerCar(RIGHT_SMALL, 0);
+          }  
+        }
+        if(inputString[2] == 'N'){
+          steerCar(NEUTRAL, 0);
+        }   
+      }   
+    }
+    inputString = "";
+    stringComplete = false;
+  }
+}
+void serialEvent() {
+  while (Serial.available()) {
+    // get the new byte:
+    char inChar = (char)Serial.read();
+    // add it to the inputString:
+    inputString += inChar;
+    // if the incoming character is a newline, set a flag so the main loop can
+    // do something about it:
+    if (inChar == '\n') {
+      stringComplete = true;
+    }
+  }
+}
+
 void setup() {
   Serial.begin(115200);
   Serial.println("转向在第8通道 编号从0开始的");
 
+  //  只保留 200 bytes给inputString:
+  inputString.reserve(200);
+  
   pwm.begin();
   // 需要用示波器确认一下晶振的频率是多少Hz 才能保证PWM的频率够准确
   pwm.setOscillatorFrequency(XTAL_FREQ);  // 我们手上的i2c duoji晶振频率是25.8MHz
@@ -266,7 +346,7 @@ void setup() {
   analogWrite(PWMA, 0);   //TB6612控制引脚拉低
   analogWrite(PWMB, 0);   //TB6612控制引脚拉低
 
-  pinMode(2, INPUT);  //编码器引脚
+  pinMode(2, INPUT);  //编码器引脚   
   pinMode(4, INPUT);  //编码器引脚
   pinMode(5, INPUT);  //编码器引脚
   pinMode(8, INPUT);  //编码器引脚
@@ -298,7 +378,9 @@ void loop() {
   // steerCar(NEUTRAL, 1);
   // delay(4000);
   steerCar(NEUTRAL, 0);
-  delay(4000);  
+  openmvloop(); 
+  delay(4000);
+   
 }
 
 void READ_ENCODER_L() {
