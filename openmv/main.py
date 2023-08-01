@@ -1,7 +1,7 @@
-THRESHOLD = (6, 65, 30, 105, 10, 49) # Grayscale threshold for dark things...
+THRESHOLD = (28, 0, -55, 14, -14, 14) # Grayscale threshold for dark things...
 #(13, 58, 11, 127, -128, 127) blue
 #(6, 65, 30, 105, 10, 49)  red
-# (34, 0, -27, 2, 0, 18) black
+# (28, 0, -55, 14, -14, 14) black
 import sensor, image, time
 from pyb import LED
 from pid import PID
@@ -18,7 +18,7 @@ sensor.set_vflip(True)
 sensor.set_hmirror(True)
 sensor.set_pixformat(sensor.RGB565)
 sensor.set_framesize(sensor.QQQVGA) # 80x60 (4,800 pixels) - O(N^2) max = 2,3040,000.
-#sensor.set_windowing([0,20,80,40])
+sensor.set_windowing((10,20,60,40))
 sensor.skip_frames(time = 2000)     # WARNING: If you use QQVGA it may take seconds
 clock = time.clock()                # to process a frame sometimes.
 
@@ -34,6 +34,7 @@ while(True):
             theta_err = line.theta()
         img.draw_line(line.line(), color = 127)
         print(rho_err,line.magnitude(),rho_err)
+#        print(line.magnitude())
         if line.magnitude()>8:
             #if -40<b_err<40 and -30<t_err<30:
             rho_output = rho_pid.get_pid(rho_err,1)
@@ -41,11 +42,11 @@ while(True):
             output = rho_output+theta_output
             if(output >20):
                 car.trans('f','R','B')
-            elif output > 10:
+            elif output > 5:
                 car.trans('f','R','S')
-            elif output > -10:
+            elif output > -5:
                 car.trans('f','N','S')
-            elif output < -10 and output > -20:
+            elif output < -5 and output > -20:
                 car.trans('f','L','S')
             elif output < -20 :
                 car.trans('f','L','B')
@@ -54,5 +55,8 @@ while(True):
             car.trans('s','N','S')
     else:
         car.trans('f','L','B')
+        time.sleep_ms(300)
+        car.trans('s','N','S')
     time.sleep_ms(100)
     #print(clock.fps())
+#print("over")

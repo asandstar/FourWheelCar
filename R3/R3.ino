@@ -22,7 +22,7 @@
 #define SERVO_FREQ 50    // 舵机PWM的频率是50Hz
 #define CHANNEL_STEER 8  //默认我设在8通道 通道范围0~15
 
-#define TARGET_SPEED_BASE 100  //某个速度
+#define TARGET_SPEED_BASE 75  //某个速度
 
 // 平衡小车shield的相关引脚定义
 #define KEY 3   //按键引脚
@@ -261,6 +261,7 @@ void openmvloop(){
          Flag_Stop = 1; 
       }
       if(inputString[1] == 'f'){
+        Flag_Stop = 0;
         if(inputString[2] == 'L'){
           if(inputString[3] == 'B'){
             steerCar(LEFT_LARGE, 1);  
@@ -282,6 +283,7 @@ void openmvloop(){
         }   
       }
       if(inputString[1] == 'b'){
+        Flag_Stop = 0;
         if(inputString[2] == 'L'){
           if(inputString[3] == 'B'){
             steerCar(LEFT_LARGE, 0);  

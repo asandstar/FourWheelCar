@@ -2,7 +2,7 @@ from pyb import Pin, Timer
 inverse_left=False  #change it to True to inverse left wheel
 inverse_right=False #change it to True to inverse right wheel
 from machine import UART
-serial = UART(1,9600)
+serial = UART(3,9600)
 
 #ain1 =  Pin('P0', Pin.OUT_PP)
 #ain2 =  Pin('P1', Pin.OUT_PP)
