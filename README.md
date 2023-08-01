@@ -21,9 +21,9 @@
 
 ①#define CHANNEL_STEER 8  //轮子舵机脉冲 设在8通道 
 
-②#define CHANNEL_GIMBAL_up 7 //云台上层舵机脉冲 
+②#define CHANNEL_GIMBAL_UP 7 //云台上层舵机脉冲 
 
-③#define CHANNEL_GIMBAL_dowm 6 //云台下层舵机脉冲 
+③#define CHANNEL_GIMBAL_DOWM 6 //云台下层舵机脉冲 
 
 8.void steerCar(enum STEERING choice, bool forward) 转向控制
 
