@@ -1,0 +1,35 @@
+WARNING: awplayer <log_set_level:30>: Set log level to 3
+DEBUG  : awplayer <ReadPluginEntry:194>: read plugin entry adecoder-0 fail!
+DEBUG  : awplayer <CdxPluginLoadList:221>: have config 0 entry
+DEBUG  : awplayer <CdxPluginLoadList:222>: start to open adecoder lib
+DEBUG  : awplayer <CdxPluginLoadList:202>: Load Plugin list vdecoder
+DEBUG  : awplayer <ReadPluginEntry:178>: read plugin entry vdecoder-0 ok.
+DEBUG  : awplayer <ReadPluginEntry:178>: read plugin entry vdecoder-1 ok.
+DEBUG  : awplayer <ReadPluginEntry:178>: read plugin entry vdecoder-2 ok.
+DEBUG  : awplayer <ReadPluginEntry:194>: read plugin entry vdecoder-3 fail!
+DEBUG  : awplayer <CdxPluginLoadList:221>: have config 3 entry
+DEBUG  : awplayer <CdxPluginLoadList:222>: start to open vdecoder lib
+DEBUG  : awplayer <DlOpenPlugin:96>: plugin vdecoder.h264 comment is "h264_vdecoder"
+DEBUG  : awplayer <DlOpenPlugin:97>: plugin open lib: libawh264.so
+DEBUG  : awplayer <DlOpenPlugin:116>: plugin init : CedarPluginVDInit
+DEBUG  : awplayer <DlOpenPlugin:96>: plugin vdecoder.h265 comment is "h265_vdecoder"
+DEBUG  : awplayer <DlOpenPlugin:97>: plugin open lib: libawh265.so
+DEBUG  : awplayer <DlOpenPlugin:116>: plugin init : CedarPluginVDInit
+DEBUG  : awplayer <DlOpenPlugin:96>: plugin vdecoder.mjpegplus comment is "mjpegplus_vdecoder"
+DEBUG  : awplayer <DlOpenPlugin:97>: plugin open lib: libawmjpegplus.so
+DEBUG  : awplayer <DlOpenPlugin:116>: plugin init : CedarPluginVDInit
+DEBUG  : awplayer <CdxPluginLoadList:202>: Load Plugin list plugin
+DEBUG  : awplayer <ReadPluginEntry:194>: read plugin entry plugin-0 fail!
+DEBUG  : awplayer <CdxPluginLoadList:221>: have config 0 entry
+DEBUG  : awplayer <CdxPluginLoadList:222>: start to open plugin lib
+>>>>>>>>>>>>>>>>>>>>>>>>>>>>> Media Process Platform<<<<<<<<<<<<<<<<<<<<<<<<<<<<
+modName : MPP-Platform
+tag   : V1.0 Release
+branch: v5-dev
+commit: 4eed413532ad87725895a8cb1ba75e22fc328233
+date  : 20170725
+author: jenkins
+debug  : cedarc <VeInitialize:1214>: *** nPhyOffset = 0x0
+debug  : cedarc <VeSetSpeed:1730>: *** set ve freq to 300 Mhz ***
+debug  : cedarc <VeInitialize:1270>: ve init ok
+
