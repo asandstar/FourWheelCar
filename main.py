@@ -21,11 +21,11 @@ while 1:
             #for b in blobs:
                 x_start = i["x"]
                 x_end = i["x"] + i["w"]
-                x_center = int((x_start + x_end) / 2)  # 中心坐标
+                x_center = (x_start + x_end) / 2 # 中心坐标
                 y_start = i["y"]
                 y_end = i["y"] + i["h"]
-                y_center = int((y_start + y_end) /  2)                    
-                img.draw_circle(x_center, y_center, int(i["h"] / 4 + 4), color=(255, 0, 0),
+                y_center = (y_start + y_end) /  2                
+                img.draw_circle(int(x_center), int(y_center), int(i["h"] / 4 + 4), color=(255, 0, 0),
                                     thickness=2)  # 画一个中心点在（50,50），半径为20的空心圆
                 # if (j == 0):
                 #     string = 'Red'
@@ -41,12 +41,15 @@ while 1:
     display.show(img)
     time_t = time.time() - now_time
     if (time_t > 0.03):
+        #print(x_center,y_center)
         if flag == '0':
-            tep = "x:" + str(x_center - 120)   # 先获得数据
+            tep = "x:" + str(x_center)   # 先获得x数据
+            #print(tep)
             ser.write(tep.encode("ascii"))  # 变成串口能发送的格式发出去
-            flag = 'x'  # 先发X再发Y，需要等等不然32会反映不过来，但又不能阻塞
+            flag = 'x'  # 先发X再发Y，需要等等不然会反映不过来，但又不能阻塞
 
         elif flag == 'x':
             flag = '1'
-            tep = "y:" + str(y_center - 120)   # 先获得数据
+            tep = "y:" + str(y_center)   # 获得y数据
+            #print(tep)
             ser.write(tep.encode("ascii"))  # 变成串口能发送的格式发出去
